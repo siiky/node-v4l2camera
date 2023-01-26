@@ -313,7 +313,7 @@ namespace {
     auto callCallback = [](CallbackData* data) -> void {
       Nan::HandleScope scope;
       auto thisObj = Nan::New<v8::Object>(data->thisObj);
-      data->callback->Call(thisObj, 0, nullptr);
+      data->callback->Call(thisObj, 0, nullptr, nullptr);
     };
     WatchCB(handle, callCallback);
   }
@@ -336,7 +336,7 @@ namespace {
       auto camera = Nan::ObjectWrap::Unwrap<Camera>(thisObj)->camera;
       auto captured = bool{camera_capture(camera)};
       std::vector<v8::Local<v8::Value>> args{{Nan::New(captured)}};
-      data->callback->Call(thisObj, args.size(), args.data());
+      data->callback->Call(thisObj, args.size(), args.data(), nullptr);
     };
     WatchCB(handle, callCallback);
   }
