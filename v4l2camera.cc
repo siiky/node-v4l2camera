@@ -450,4 +450,18 @@ namespace {
   }
 }
 
+// This is the source of the follow warning. According to the NAN maintainers
+// it's safe to ignore? See https://github.com/nodejs/nan/issues/946
+//
+// In file included from ../node_modules/nan/nan.h:60,
+//                  from ../v4l2camera.cc:3:
+// /home/machine/.cache/node-gyp/18.7.0/include/node/node.h:862:7: warning: cast between incompatible function types from ‘void (*)(Nan::ADDON_REGISTER_FUNCTION_ARGS_TYPE)’ {aka ‘void (*)(v8::Local<v8::Object>)’} to ‘node::addon_register_func’ {aka ‘void (*)(v8::Local<v8::Object>, v8::Local<v8::Value>, void*)’} [-Wcast-function-type]
+//   862 |       (node::addon_register_func) (regfunc),
+//       |       ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+// /home/machine/.cache/node-gyp/18.7.0/include/node/node.h:896:3: note: in expansion of macro ‘NODE_MODULE_X’
+//   896 |   NODE_MODULE_X(modname, regfunc, NULL, 0)  // NOLINT (readability/null_usage)
+//       |   ^~~~~~~~~~~~~
+// ../v4l2camera.cc:453:1: note: in expansion of macro ‘NODE_MODULE’
+//   453 | NODE_MODULE(v4l2camera, Camera::Init)
+//       | ^~~~~~~~~~~
 NODE_MODULE(v4l2camera, Camera::Init)
