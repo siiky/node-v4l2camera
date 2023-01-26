@@ -317,9 +317,10 @@ static inline uint8_t yuv2b(int y, int u, int v)
 {
   (void) v; return minmax(0, (y + 454 * u) >> 8, 255);
 }
-uint8_t* yuyv2rgb(const uint8_t* yuyv, uint32_t width, uint32_t height)
+uint8_t* yuyv2rgb(const uint8_t* yuyv, uint32_t width, uint32_t height, size_t *size)
 {
-  uint8_t* rgb = calloc(width * height * 3, sizeof (uint8_t));
+  *size = width * height * 3;
+  uint8_t* rgb = calloc(*size, sizeof (uint8_t));
   for (size_t i = 0; i < height; i++) {
     for (size_t j = 0; j < width; j += 2) {
       size_t index = i * width + j;

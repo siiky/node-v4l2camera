@@ -360,8 +360,10 @@ namespace {
   NAN_METHOD(Camera::FrameYUYVToRGB) {
     // TBD: check the current format as YUYV
     const auto camera = Nan::ObjectWrap::Unwrap<Camera>(info.Holder())->camera;
-    auto rgb = yuyv2rgb(camera->head.start, camera->width, camera->height);
-    const auto size = camera->width * camera->height * 3;
+
+    size_t size = 0;
+    uint8_t* rgb = yuyv2rgb(camera->head.start, camera->width, camera->height, &size);
+
     const auto flag = v8::ArrayBufferCreationMode::kInternalized;
     auto buf = v8::ArrayBuffer::New(info.GetIsolate(), rgb, size, flag);
     auto array = v8::Uint8Array::New(buf, 0, size);
