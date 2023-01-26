@@ -366,6 +366,7 @@ namespace {
 
     const auto flag = v8::ArrayBufferCreationMode::kInternalized;
     auto buf = v8::ArrayBuffer::New(info.GetIsolate(), rgb, size, flag);
+    free(rgb);
     auto array = v8::Uint8Array::New(buf, 0, size);
     info.GetReturnValue().Set(array);
   }
