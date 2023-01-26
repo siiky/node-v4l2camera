@@ -423,8 +423,10 @@ bool camera_config_set(camera_t* camera, const camera_format_t* format)
 
 void camera_capabilities(camera_t* camera) {
   struct v4l2_capability cap;
-  if (xioctl(camera->fd, VIDIOC_QUERYCAP, &cap) == -1)
-    return error(camera, "VIDIOC_QUERYCAP");
+  if (xioctl(camera->fd, VIDIOC_QUERYCAP, &cap) == -1) {
+    error(camera, "VIDIOC_QUERYCAP");
+    return;
+  }
 
   camera->capabilities = cap.capabilities;
 
