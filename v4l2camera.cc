@@ -349,10 +349,11 @@ namespace {
   NAN_METHOD(Camera::FrameRaw) {
     const auto camera = Nan::ObjectWrap::Unwrap<Camera>(info.Holder())->camera;
     const auto size = camera->head.length;
-    auto data = new uint8_t[size];
-    std::copy(camera->head.start, camera->head.start + size, data);
-    const auto flag = v8::ArrayBufferCreationMode::kInternalized;
-    auto buf = v8::ArrayBuffer::New(info.GetIsolate(), data, size, flag);
+
+    const std::shared_ptr<v8::BackingStore> backingStore = v8::ArrayBuffer::NewBackingStore(info.GetIsolate(), size);
+    std::copy(camera->head.start, camera->head.start + size, backingStore->Data());
+
+    auto buf = v8::ArrayBuffer::New(info.GetIsolate(), backingStore);
     auto array = v8::Uint8Array::New(buf, 0, size);
     info.GetReturnValue().Set(array);
   }
@@ -364,9 +365,12 @@ namespace {
     size_t size = 0;
     uint8_t* rgb = yuyv2rgb(camera->head.start, camera->width, camera->height, &size);
 
-    const auto flag = v8::ArrayBufferCreationMode::kInternalized;
-    auto buf = v8::ArrayBuffer::New(info.GetIsolate(), rgb, size, flag);
+    const std::shared_ptr<v8::BackingStore> backingStore = v8::ArrayBuffer::NewBackingStore(info.GetIsolate(), size);
+
+    std::copy(rgb, rgb + size, backingStore->Data());
     free(rgb);
+
+    auto buf = v8::ArrayBuffer::New(info.GetIsolate(), backingStore);
     auto array = v8::Uint8Array::New(buf, 0, size);
     info.GetReturnValue().Set(array);
   }
