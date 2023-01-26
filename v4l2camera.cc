@@ -350,7 +350,7 @@ namespace {
     const auto size = camera->head.length;
 
     const std::shared_ptr<v8::BackingStore> backingStore = v8::ArrayBuffer::NewBackingStore(info.GetIsolate(), size);
-    std::copy(camera->head.start, camera->head.start + size, backingStore->Data());
+    std::copy(camera->head.start, camera->head.start + size, (unsigned char *) backingStore->Data());
 
     auto buf = v8::ArrayBuffer::New(info.GetIsolate(), backingStore);
     auto array = v8::Uint8Array::New(buf, 0, size);
