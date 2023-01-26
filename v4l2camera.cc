@@ -464,4 +464,4 @@ namespace {
 // ../v4l2camera.cc:453:1: note: in expansion of macro ‘NODE_MODULE’
 //   453 | NODE_MODULE(v4l2camera, Camera::Init)
 //       | ^~~~~~~~~~~
-NODE_MODULE(v4l2camera, Camera::Init)
+NODE_MODULE(v4l2camera, (void *) Camera::Init)
