@@ -367,7 +367,7 @@ namespace {
 
     const std::shared_ptr<v8::BackingStore> backingStore = v8::ArrayBuffer::NewBackingStore(info.GetIsolate(), size);
 
-    std::copy(rgb, rgb + size, backingStore->Data());
+    std::copy(rgb, rgb + size, (uint8_t *) backingStore->Data());
     free(rgb);
 
     auto buf = v8::ArrayBuffer::New(info.GetIsolate(), backingStore);
