@@ -5,9 +5,9 @@ try {
   const camera = v4l2camera.Camera('/dev/video0');
   camera.configSet(camera.formats[6]);
   console.log(camera.controlGet(9963778));
-camera.controlSet(9963778, 50)
+  camera.controlSet(9963778, 50)
   console.log(camera.controlGet(9963778));
   debugger;
 } catch (error) {
-debugger;
+  debugger;
 }
