@@ -25,6 +25,7 @@ namespace {
     static NAN_METHOD(Stop);
     static NAN_METHOD(Capture);
     static NAN_METHOD(FrameRaw);
+    static NAN_METHOD(FrameYUYVToRGB);
     static NAN_METHOD(ConfigGet);
     static NAN_METHOD(ConfigSet);
     static NAN_METHOD(ControlGet);
@@ -357,6 +358,24 @@ namespace {
     info.GetReturnValue().Set(array);
   }
   
+  NAN_METHOD(Camera::FrameYUYVToRGB) {
+    // TBD: check the current format as YUYV
+    const auto camera = Nan::ObjectWrap::Unwrap<Camera>(info.Holder())->camera;
+
+    size_t size = 0;
+    uint8_t* rgb = yuyv2rgb(camera->head.start, camera->width, camera->height, &size);
+
+    const std::shared_ptr<v8::BackingStore> backingStore = v8::ArrayBuffer::NewBackingStore(info.GetIsolate(), size);
+
+    std::copy(rgb, rgb + size, backingStore->Data());
+    free(rgb);
+
+    auto buf = v8::ArrayBuffer::New(info.GetIsolate(), backingStore);
+    auto array = v8::Uint8Array::New(buf, 0, size);
+    info.GetReturnValue().Set(array);
+  }
+  
+  
   NAN_METHOD(Camera::ConfigGet) {
     const auto camera = Nan::ObjectWrap::Unwrap<Camera>(info.Holder())->camera;
     camera_format_t cformat;
@@ -442,6 +461,7 @@ namespace {
     Nan::SetPrototypeMethod(ctor, "capture", Capture);
     Nan::SetPrototypeMethod(ctor, "frameRaw", FrameRaw);
     Nan::SetPrototypeMethod(ctor, "toYUYV", FrameRaw);
+    Nan::SetPrototypeMethod(ctor, "toRGB", FrameYUYVToRGB);
     Nan::SetPrototypeMethod(ctor, "configGet", ConfigGet);
     Nan::SetPrototypeMethod(ctor, "configSet", ConfigSet);
     Nan::SetPrototypeMethod(ctor, "controlGet", ControlGet);
